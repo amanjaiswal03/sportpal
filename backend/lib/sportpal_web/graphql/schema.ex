@@ -16,7 +16,7 @@ defmodule SportpalWeb.Graphql.Schema do
       resolve(&get_user/3)
     end
 
-    field :exact_matches, list_of(:user) do
+    field :exact_matches, list_of(:match) do
       arg(:match, non_null(:exact_match_form))
 
       resolve(&get_exact_matches/3)
@@ -33,7 +33,25 @@ defmodule SportpalWeb.Graphql.Schema do
   end
 
   defp get_exact_matches(_parent, %{match: match_args} = _args, _resolution) do
-    {:ok, Inquiries.get_matches(match_args)}
+    inquiries = Inquiries.get_matches(match_args)
+
+    # convert it into desired object shape
+    result =
+      Enum.reduce(inquiries, [], fn i, acc ->
+        res = %{
+          full_name: i.user.full_name,
+          profile_pic: i.user.profile_pic,
+          sport: i.sport,
+          preferred_skill_level: i.preferred_skill_level,
+          city: i.city,
+          country: i.country
+        }
+
+        [res | acc]
+      end)
+      |> Enum.reverse()
+
+    {:ok, result}
   end
 
   # OBJECTS
@@ -54,6 +72,16 @@ defmodule SportpalWeb.Graphql.Schema do
     field :country, :string
     field :availability, :string
     field :matching_partners, list_of(:string)
+  end
+
+  @desc "A matching sportpal"
+  object :match do
+    field(:full_name, non_null(:string))
+    field(:profile_pic, non_null(:string))
+    field(:sport, non_null(:string))
+    field(:preferred_skill_level, non_null(:string))
+    field(:city, non_null(:string))
+    field(:country, non_null(:string))
   end
 
   # INPUT OBJECTS

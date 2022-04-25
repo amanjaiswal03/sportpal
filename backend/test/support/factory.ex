@@ -27,8 +27,11 @@ defmodule Sportpal.Factory do
       country: Address.En.country(),
       bio: Lorem.paragraph(),
       date_of_birth: Date.date_of_birth(),
-      sports: ["cricket", "football", "tennis"],
-      availability: "yes",
+      sports: %{
+        tennis: "beginner",
+        cricket: "advanced"
+      },
+      availability: ["sunday", "wednesday"],
       matching_partners: [123, 456],
       confirmed_at: ~U[2016-05-24 13:26:08.003Z]
     }
@@ -43,7 +46,7 @@ defmodule Sportpal.Factory do
       sport: Lorem.word(),
       date: ~U[2016-05-24 13:26:08.003Z],
       preferred_skill_level:
-        sequence(:preferred_skill_level, ["begineer", "intermediate", "expert", "any"])
+        sequence(:preferred_skill_level, ["beginner", "intermediate", "expert", "any"])
     }
   end
 

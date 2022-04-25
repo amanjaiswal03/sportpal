@@ -41,7 +41,11 @@ defmodule SportpalWeb.Graphql.SchemaTest do
     query myMatch($match: ExactMatchForm!) {
       exactMatches(match: $match) {
         full_name
-        email
+        profile_pic
+        sport
+        preferred_skill_level
+        city
+        country
       }
     }
     """
@@ -84,7 +88,16 @@ defmodule SportpalWeb.Graphql.SchemaTest do
       # assert
       assert resp == %{
                "data" => %{
-                 "exactMatches" => [%{"email" => user_1.email, "full_name" => user_1.full_name}]
+                 "exactMatches" => [
+                   %{
+                     "profile_pic" => user_1.profile_pic,
+                     "full_name" => user_1.full_name,
+                     "sport" => inquiry_1.sport,
+                     "preferred_skill_level" => inquiry_1.preferred_skill_level,
+                     "city" => inquiry_1.city,
+                     "country" => inquiry_1.country
+                   }
+                 ]
                }
              }
     end
